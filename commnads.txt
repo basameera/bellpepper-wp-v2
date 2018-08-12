@@ -1,8 +1,4 @@
-heroku login
-git init
-git add .
-git commit -m "Initing"
-git push https://git.heroku.com/shielded-wildwood-70628.git master
+git config --global credential.helper 'cache --timeout=3600'
 
 # to check git status: git status
 
