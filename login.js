@@ -37,7 +37,7 @@ let confirmMailOptions = {
 	from: '"[DEV] Bellpepper WebPortal - Ceymoss" <dev@ceymoss.com>', // sender address - change to "bellpepper@ceymoss.com"
 	to: '', // list of receivers
 	subject: 'Confirm Email - Bellpepper WebPortal [Restaurant Name]', // Subject line
-	text: '\n\nLet\' confirm your email, so you can enjoy our wonderful web platform. Click the link below to confirm your email.\n' // plain text body
+	text: '\n\nLet\'s confirm your email, so you can enjoy our wonderful web platform. Click the link below to confirm your email.\n' // plain text body
 	// html: htmlstream // html body
 };
 
@@ -46,7 +46,7 @@ let resetMailOptions = {
 		'priority': 'high'
 	},
 	from: '"[DEV] Bellpepper WebPortal - Ceymoss" <dev@ceymoss.com>', // sender address - change to "bellpepper@ceymoss.com"
-	to: 'basameera.sjc@gmail.com', // list of receivers
+	to: '', // list of receivers
 	subject: 'Password Reset - Bellpepper WebPortal [Restaurant Name]', // Subject line
 	text: '\n\nIt looks like you are trying to reset your password. Click the link below to reset your password.\n' // plain text body
 	// html: htmlstream // html body
@@ -95,6 +95,7 @@ module.exports = function (app, auth, getRandom) {
 										req.session.user = "admin";
 										req.session.admin = true;
 										req.session.username = fields.username;
+										req.session.usid = result[0].id;
 										res.redirect('/index');
 									}
 									else res.redirect('/');
@@ -134,9 +135,12 @@ module.exports = function (app, auth, getRandom) {
 						var jarr = [];
 						if (result.length > 0) {
 							for (var x = 0; x < result.length; x++) {
+								var con = 'btn btn-danger btn-simple btn-xs'
+								if(parseInt(result[x].email_confirm)==1)con = 'btn btn-success btn-simple btn-xs'
 								var job = {
 									"NAME": result[x].db_username,
 									"ID": result[x].id,
+									"CON": con,
 									"EMAIL": result[x].email
 								}
 								jarr.push(job);
@@ -144,7 +148,7 @@ module.exports = function (app, auth, getRandom) {
 							}
 
 						}
-						console.log(jarr);
+						// console.log(jarr);
 						res.json(jarr);
 					} else {
 						res.end(err);
@@ -157,12 +161,11 @@ module.exports = function (app, auth, getRandom) {
 	});
 
 	app.post('/registeruser', function (req, res) {
-
 		const code = getRandom().toString();
-		confirmMailOptions.text = 'Hi '+req.body.us+'!,'+confirmMailOptions.text+'\nhttp://localhost/auth/user/confirm/ler7wsd98fjv/email?code=' + code + '&email=' + req.body.email;
+		confirmMailOptions.text = 'Hi ' + req.body.us + '!,' + confirmMailOptions.text + '\nhttp://'+process.env.HOST_URL+'/auth/user/confirm/ler7wsd98fjv/email?code=' + code + '&email=' + req.body.email;
 		confirmMailOptions.text += '\n\nEnjoy your browsing,\nBellpepper Team @ Ceymoss\n';
 		confirmMailOptions.to = req.body.email;
-		console.log(confirmMailOptions.text);
+		console.log(confirmMailOptions);
 		transporter.sendMail(confirmMailOptions, (error, info) => {
 			if (error) {
 				res.json({ status: false });
@@ -275,35 +278,33 @@ module.exports = function (app, auth, getRandom) {
 					if (!err) {
 						if (result.length > 0) {
 							const code = getRandom().toString();
-							resetMailOptions.text = 'Hi '+result[0].db_username+'!,'+resetMailOptions.text+'\n\nhttp://localhost/auth/user/reset/ssl_zY2sdgspN/password?code=' + code + '&email=' + req.body.email;
+							resetMailOptions.text = 'Hi ' + result[0].db_username + '!,' + resetMailOptions.text + '\n\nhttp://'+process.env.HOST_URL+'/auth/user/reset/ssl_zY2sdgspN/password?code=' + code + '&email=' + req.body.email;
 							resetMailOptions.text += '\nEnjoy your browsing,\nBellpepper Team @ Ceymoss\n';
-							console.log(resetMailOptions.text);
-							pool.getConnection(function (err, connection) {
-								connection.query("UPDATE `" + dbname + "`.`portal_user` SET `reset_code`=?, `reset_tm`=NOW() WHERE `email`=?;",
-									[code, req.body.email],
-									function (err, result) {
-										connection.release();
-										if (!err) {
+							resetMailOptions.to = req.body.email;
+							console.log(resetMailOptions);
 
-											transporter.sendMail(resetMailOptions, (error, info) => {
-												if (error) {
-													res.json({ status: false });
-													return console.log(error);
-												}
-												console.log('Message %s sent: %s', info.messageId, info.response);
+							transporter.sendMail(resetMailOptions, (error, info) => {
+								if (error) {
+									res.json({ status: false });
+									return console.log(error);
+								}
+								console.log('Message %s sent: %s', info.messageId, info.response);
+
+								pool.getConnection(function (err, connection) {
+									connection.query("UPDATE `" + dbname + "`.`portal_user` SET `reset_code`=?, `reset_tm`=NOW() WHERE `email`=?;",
+										[code, req.body.email],
+										function (err, result) {
+											connection.release();
+											if (!err) {
 												res.json({ status: true });
-											});
-											// res.json({ status: true });
-
-
-										} else {
-											res.json({ status: false });
-											console.error(err);
-											//throw err;
-										}
-									});
+											} else {
+												res.json({ status: false });
+												console.error(err);
+												//throw err;
+											}
+										});
+								});
 							});
-							// res.json({ status: true });
 						}
 						else {
 							res.json({ status: false });

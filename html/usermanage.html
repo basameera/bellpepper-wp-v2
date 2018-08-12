@@ -7,7 +7,7 @@
   <!-- <link rel="icon" type="image/png" href="assets/img/favicon.png"> -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Material Dashboard by Creative Tim
+    Bellpepper
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'
   />
@@ -168,7 +168,7 @@
             <div class="col-md-6">
               <div class="card">
                 <div class="card-header card-header-primary">
-                  <h4 class="card-title">Register Users</h4>
+                  <h4 class="card-title">Register Users - ADD Confirm email button</h4>
                   <p class="card-category">Complete your profile</p>
                 </div>
                 <div class="card-body">
@@ -212,20 +212,18 @@
                       <thead class=" text-primary">
                         <th>Username</th>
                         <th>Email</th>
+                        <th>Email Status</th>
                         <th>Delete</th>
-
                       </thead>
                       <tbody>
-                        <!-- <tr>
-                          <td>1</td>
-                          <td>Dakota Rice</td>
-                          <td>Niger</td>
-                          <td>Oud-Turnhout</td>
-                          <td class="text-primary">$36,738</td>
-                        </tr> -->
                         <tr ng-repeat="x in UDATA">
                           <td id="user{{x.ID}}">{{x.NAME}}</td>
                           <td id="user{{x.ID}}">{{x.EMAIL}}</td>
+                          <td class="td-actions ">
+                              <button type="button" rel="tooltip" title="Confirm Email" class="{{x.CON}}" id="ce{{x.ID}}" onclick="conEmail(this.id)">
+                                <i class="material-icons">email</i>
+                              </button>
+                            </td>
                           <td class="td-actions ">
                             <button type="button" rel="tooltip" title="Delete" class="btn btn-danger btn-simple btn-xs" id="r{{x.ID}}" onclick="delUser(this.id)">
                               <i class="material-icons">close</i>
