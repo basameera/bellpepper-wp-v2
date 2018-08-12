@@ -58,3 +58,45 @@
   level: 'error',
   label: 'right meow!',
   timestamp: '2018-08-12T09:16:21.220Z' }
+{ Error: Can't set headers after they are sent.
+    at ServerResponse.OutgoingMessage.setHeader (_http_outgoing.js:357:11)
+    at ServerResponse.header (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\express\lib\response.js:730:10)
+    at ServerResponse.send (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\express\lib\response.js:170:12)
+    at ServerResponse.json (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\express\lib\response.js:256:15)
+    at Query._callback (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\login.js:238:16)
+    at Query.Sequence.end (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\sequences\Sequence.js:88:24)
+    at Query.ErrorPacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\sequences\Query.js:90:8)
+    at Protocol._parsePacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\Protocol.js:279:23)
+    at Parser.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\Parser.js:76:12)
+    at Protocol.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+  level: 'error',
+  label: 'right meow!',
+  timestamp: '2018-08-12T19:48:43.121Z' }
+{ Error: Can't set headers after they are sent.
+    at ServerResponse.OutgoingMessage.setHeader (_http_outgoing.js:357:11)
+    at ServerResponse.header (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\express\lib\response.js:730:10)
+    at ServerResponse.send (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\express\lib\response.js:170:12)
+    at ServerResponse.json (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\express\lib\response.js:256:15)
+    at Query._callback (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\login.js:227:11)
+    at Query.Sequence.end (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\sequences\Sequence.js:88:24)
+    at Query._handleFinalResultPacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\sequences\Query.js:139:8)
+    at Query.EofPacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\sequences\Query.js:123:8)
+    at Protocol._parsePacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\Protocol.js:279:23)
+    at Parser.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\Parser.js:76:12)
+  level: 'error',
+  label: 'right meow!',
+  timestamp: '2018-08-12T20:12:48.588Z' }
+{ Error: Can't set headers after they are sent.
+    at ServerResponse.OutgoingMessage.setHeader (_http_outgoing.js:357:11)
+    at ServerResponse.header (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\express\lib\response.js:730:10)
+    at ServerResponse.send (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\express\lib\response.js:170:12)
+    at ServerResponse.json (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\express\lib\response.js:256:15)
+    at Query._callback (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\login.js:235:11)
+    at Query.Sequence.end (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\sequences\Sequence.js:88:24)
+    at Query._handleFinalResultPacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\sequences\Query.js:139:8)
+    at Query.EofPacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\sequences\Query.js:123:8)
+    at Protocol._parsePacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\Protocol.js:279:23)
+    at Parser.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Git Dev\bellpepper-wp-v2\node_modules\mysql\lib\protocol\Parser.js:76:12)
+  level: 'error',
+  label: 'right meow!',
+  timestamp: '2018-08-12T20:17:33.198Z' }
