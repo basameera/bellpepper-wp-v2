@@ -1,0 +1,48 @@
+{
+  "name": "nodejs-project-template",
+  "version": "1.0.0",
+  "description": "Node JS Dashboard Template",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+	"dev": "node server.js",
+    "debug": "nodemon server.js",
+	"prod": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+	"express": "*",
+	"mysql": "*",
+	"body-parser": "*",
+	"express-session": "*",
+	"formidable": "*",
+	"aes-cross": "*",
+	"numeral": "*",
+	"morgan": "*",
+	"pm2": "*",
+	"chart.js": "^2.7.2",
+	"cors": "^2.8.4",
+	"dotenv": "^6.0.0",
+	"nodemailer": "^4.6.7",
+	"random-number": "0.0.9",
+	"serve-favicon": "^2.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/basameera/nodejs-project-template.git"
+  },
+  "keywords": [
+    "nodejs",
+    "dashboard"
+  ],
+  "author": "Sameera Sandaruwan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/basameera/nodejs-project-template/issues"
+  },
+  "homepage": "https://github.com/basameera/nodejs-project-template#readme",
+  "devDependencies": {
+    "nodemon": "^1.18.3",
+    "winston": "^3.0.0"
+  }
+}

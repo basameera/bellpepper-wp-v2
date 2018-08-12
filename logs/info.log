@@ -1,0 +1,101 @@
+
+{ message: 'user',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T08:42:07.955Z' }
+{ message: 'branch',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T08:42:07.968Z' }
+{ message: 'products',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T08:42:07.977Z' }
+{ message: 'user',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T08:42:21.398Z' }
+{ message: 'user',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T14:02:34.157Z' }
+{ message: 'branch',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T14:02:34.175Z' }
+{ message: 'products',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T14:02:34.183Z' }
+{ message: 'user',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T14:02:51.433Z' }
+{ message: 'branch',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T14:02:51.440Z' }
+{ message: 'products',
+  level: 'info',
+  label: 'right meow!',
+  timestamp: '2018-08-11T14:02:51.449Z' }
+{ ReferenceError: pool is not defined
+    at C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\login.js:18:21
+    at IncomingForm.<anonymous> (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\formidable\lib\incoming_form.js:105:9)
+    at emitNone (events.js:86:13)
+    at IncomingForm.emit (events.js:185:7)
+    at IncomingForm._maybeEnd (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\formidable\lib\incoming_form.js:553:8)
+    at MultipartParser.parser.onEnd (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\formidable\lib\incoming_form.js:418:10)
+    at callback (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\formidable\lib\multipart_parser.js:102:31)
+    at MultipartParser.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\formidable\lib\multipart_parser.js:268:15)
+    at IncomingForm.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\formidable\lib\incoming_form.js:157:34)
+    at IncomingMessage.<anonymous> (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\formidable\lib\incoming_form.js:123:12)
+  level: 'error',
+  label: 'right meow!',
+  timestamp: '2018-08-12T08:32:19.848Z' }
+{ ReferenceError: aes is not defined
+    at C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\login.js:29:47
+    at Handshake.onConnect (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\Pool.js:64:7)
+    at Handshake.Sequence.end (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\sequences\Sequence.js:88:24)
+    at Handshake.Sequence.OkPacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\sequences\Sequence.js:97:8)
+    at Protocol._parsePacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\Protocol.js:279:23)
+    at Parser.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\Parser.js:76:12)
+    at Protocol.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\Connection.js:103:28)
+    at emitOne (events.js:96:13)
+    at Socket.emit (events.js:188:7)
+  level: 'error',
+  label: 'right meow!',
+  timestamp: '2018-08-12T08:33:14.175Z' }
+{ ReferenceError: key is not defined
+    at C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\login.js:31:76
+    at Handshake.onConnect (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\Pool.js:64:7)
+    at Handshake.Sequence.end (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\sequences\Sequence.js:88:24)
+    at Handshake.Sequence.OkPacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\sequences\Sequence.js:97:8)
+    at Protocol._parsePacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\Protocol.js:279:23)
+    at Parser.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\Parser.js:76:12)
+    at Protocol.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\Connection.js:103:28)
+    at emitOne (events.js:96:13)
+    at Socket.emit (events.js:188:7)
+  level: 'error',
+  label: 'right meow!',
+  timestamp: '2018-08-12T08:35:13.535Z' }
+{ TypeError: Cannot set property 'user' of undefined
+    at Query._callback (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\login.js:37:58)
+    at Query.Sequence.end (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\sequences\Sequence.js:88:24)
+    at Query._handleFinalResultPacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\sequences\Query.js:139:8)
+    at Query.EofPacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\sequences\Query.js:123:8)
+    at Protocol._parsePacket (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\Protocol.js:279:23)
+    at Parser.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\Parser.js:76:12)
+    at Protocol.write (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (C:\Users\Sameera\Documents\HEROKU\WebPortal V2\Heroku\node_modules\mysql\lib\Connection.js:103:28)
+    at emitOne (events.js:96:13)
+    at Socket.emit (events.js:188:7)
+  level: 'error',
+  label: 'right meow!',
+  timestamp: '2018-08-12T08:36:01.847Z' }
+{ message: 'AES.checkKey error: key length is not 16: 17',
+  level: 'error',
+  label: 'right meow!',
+  timestamp: '2018-08-12T09:16:21.220Z' }

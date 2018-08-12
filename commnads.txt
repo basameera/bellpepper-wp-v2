@@ -1,0 +1,41 @@
+heroku login
+git init
+git add .
+git commit -m "Initing"
+git push https://git.heroku.com/shielded-wildwood-70628.git master
+
+# to check git status: git status
+
+npm init -f = for initial package.json
+npm install <--save> = "--save" part will add dependencies to the package.json file
+
+add .env to .gitignore file so it won't be uploaded to git
+
+for debuging run server/app like this =>    DEBUG=* node server.js
+                                            DEBUG=* nodemon server.js
+
+*** NOTE *** : Let me emphasize this: Setting NODE_ENV to production makes your application 3 times faster!
+
+heroku Get clear DB URL
+heroku config --app <app-name>
+
+# start
+heoku login
+git init
+git add .
+git commit -m "Initing"
+
+# create heroku app
+heroku create
+git push https://git.heroku.com/<YOUR-APP-NAME>.git master
+
+# rename heroku app
+heroku apps:rename <NEW NAME>
+
+# after pushing
+1. add ClearDb to the app
+2. get ClearDb credencials (host, dbname, user, password)
+3. add all ENV variables
+4. check if app is working with login
+
+# add custom domain
