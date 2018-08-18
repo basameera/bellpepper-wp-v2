@@ -19,6 +19,7 @@
     "express": "*",
     "express-session": "*",
     "formidable": "*",
+    "jsonwebtoken": "^8.3.0",
     "moment": "^2.22.2",
     "morgan": "*",
     "mysql": "*",
