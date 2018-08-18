@@ -7,6 +7,8 @@ var key = new Buffer(process.env.AES_KEY, 'binary');
 var fs = require('fs');
 var moment = require('moment');
 var randomstring = require("randomstring");
+var Readable = require('stream').Readable
+
 /**
  * inject link to email
  * generate link parameter (code)
@@ -37,8 +39,8 @@ let confirmMailOptions = {
 	from: '"[DEV] Bellpepper WebPortal - Ceymoss" <dev@ceymoss.com>', // sender address - change to "bellpepper@ceymoss.com"
 	to: '', // list of receivers
 	subject: 'Confirm Email - Bellpepper WebPortal [Restaurant Name]', // Subject line
-	text: '\n\nLet\'s confirm your email, so you can enjoy our wonderful web platform. Click the link below to confirm your email.\n' // plain text body
-	// html: htmlstream // html body
+	text: '\n\nLet\'s confirm your email, so you can enjoy our wonderful web platform. Click the link below to confirm your email.\n', // plain text body
+	html: null // html body
 };
 
 let resetMailOptions = {
@@ -48,8 +50,8 @@ let resetMailOptions = {
 	from: '"[DEV] Bellpepper WebPortal - Ceymoss" <dev@ceymoss.com>', // sender address - change to "bellpepper@ceymoss.com"
 	to: '', // list of receivers
 	subject: 'Password Reset - Bellpepper WebPortal [Restaurant Name]', // Subject line
-	text: '\n\nIt looks like you are trying to reset your password. Click the link below to reset your password.\n' // plain text body
-	// html: htmlstream // html body
+	text: '\n\nIt looks like you are trying to reset your password. Click the link below to reset your password.\n', // plain text body
+	html: null // html body
 };
 
 // transporter.sendMail(resetMailOptions, (error, info) => {
@@ -88,18 +90,24 @@ module.exports = function (app, auth, getRandom) {
 							}
 							res.status(SERVER_ERR).json(errData);
 						}
-						connection.query("SELECT id FROM `" + dbname + "`.portal_user WHERE db_username=? AND db_password=?;",
+						connection.query("SELECT id, email_confirm FROM `" + dbname + "`.portal_user WHERE db_username=? AND db_password=?",
 							[fields.username, aes.encText(fields.password, key)],
 							function (err, result) {
 								connection.release();
 
 								if (!err) {
 									if (result.length > 0) {
-										req.session.user = "admin";
-										req.session.admin = true;
-										req.session.username = fields.username;
-										req.session.usid = result[0].id;
-										res.redirect('/index');
+										if (result[0].email_confirm == '1') {
+											req.session.user = "admin";
+											req.session.admin = true;
+											req.session.username = fields.username;
+											req.session.usid = result[0].id;
+											res.redirect('/index');
+										}
+										else {
+											res.sendFile(__dirname + '/public/pleaseconfirmemail.html');
+											// res.send('pleaseconfirmemail');
+										}
 									}
 									else res.redirect('/');
 
@@ -169,31 +177,47 @@ module.exports = function (app, auth, getRandom) {
 	app.post('/registeruser', function (req, res) {
 		const code = getRandom().toString();
 		const confirmLink = randomstring.generate(10);
-		confirmMailOptions.text = 'Hi ' + req.body.us + '!,' + confirmMailOptions.text + '\nhttp://' + process.env.HOST_URL + '/auth/user/confirm/'+confirmLink+'/email?code=' + code + '&email=' + req.body.email;
+		var confirm_URL = 'http://' + process.env.HOST_URL + '/auth/user/confirm/' + confirmLink + '/email?code=' + code + '&email=' + req.body.email;
+		confirmMailOptions.text = 'Hi ' + req.body.us + '!,' + confirmMailOptions.text + '\n';
 		confirmMailOptions.text += '\n\nEnjoy your browsing,\nBellpepper Team @ Ceymoss\n';
 		confirmMailOptions.to = req.body.email;
-		console.log(confirmMailOptions);
-		// transporter.sendMail(confirmMailOptions, (error, info) => {
-		// 	if (error) {
-		// 		res.json({ status: false });
-		// 		return console.log(error);
-		// 	}
-		// 	console.log('Message %s sent: %s', info.messageId, info.response);
-			// res.json({ status: true });
-			pool.getConnection(function (err, connection) {
-				connection.query("INSERT INTO `" + dbname + "`.`portal_user` (`db_username`, `db_password`, `email`, `confirm_code`, `confirm_tm`, `confirm_link`) VALUES (?, ?, ?, ?, NOW(), ?);",
-					[req.body.us, aes.encText(req.body.pw, key), req.body.email, code, confirmLink],
-					function (err, result) {
-						connection.release();
-						if (!err) {
-							res.json({ status: true });
-						} else {
-							res.json({ status: false });
-							console.error(err);
-						}
+
+		console.log(confirm_URL);
+		fs.readFile(__dirname + '/Email/confirm_email_1.html', (err, data1) => {
+			if (err) throw err;
+			// console.log(data.toString());
+			fs.readFile(__dirname + '/Email/confirm_email_2.html', (err, data2) => {
+				if (err) throw err;
+				var emailData = data1.toString() + confirm_URL + data2.toString()
+				var s = new Readable
+				s.push(emailData)    // the string you want
+				s.push(null)
+				confirmMailOptions.html = s;
+				transporter.sendMail(confirmMailOptions, (error, info) => {
+					if (error) {
+						res.json({ status: false });
+						return console.log(error);
+					}
+					console.log('Message %s sent: %s', info.messageId, info.response);
+					// res.json({ status: true });
+
+
+					pool.getConnection(function (err, connection) {
+						connection.query("INSERT INTO `" + dbname + "`.`portal_user` (`db_username`, `db_password`, `email`, `confirm_code`, `confirm_tm`, `confirm_link`) VALUES (?, ?, ?, ?, NOW(), ?);",
+							[req.body.us, aes.encText(req.body.pw, key), req.body.email, code, confirmLink],
+							function (err, result) {
+								connection.release();
+								if (!err) {
+									res.json({ status: true });
+								} else {
+									res.json({ status: false });
+									console.error(err);
+								}
+							});
 					});
+				});
 			});
-		// });
+		});
 
 	});
 
@@ -291,33 +315,47 @@ module.exports = function (app, auth, getRandom) {
 						if (result.length > 0) {
 							const code = getRandom().toString();
 							const resetLink = randomstring.generate(10);
-							resetMailOptions.text = 'Hi ' + result[0].db_username + '!,' + resetMailOptions.text + '\n\nhttp://' + process.env.HOST_URL + '/auth/user/reset/'+resetLink+'/password?code=' + code + '&email=' + req.body.email;
+							var reset_URL = 'http://' + process.env.HOST_URL + '/auth/user/reset/' + resetLink + '/password?code=' + code + '&email=' + req.body.email;
+							resetMailOptions.text = 'Hi ' + result[0].db_username + '!,' + resetMailOptions.text + '\n\n' + reset_URL;
 							resetMailOptions.text += '\nEnjoy your browsing,\nBellpepper Team @ Ceymoss\n';
 							resetMailOptions.to = req.body.email;
-							console.log(resetMailOptions);
+							console.log(reset_URL);
 
-							// transporter.sendMail(resetMailOptions, (error, info) => {
-							// 	if (error) {
-							// 		res.json({ status: false });
-							// 		return console.log(error);
-							// 	}
-							// 	console.log('Message %s sent: %s', info.messageId, info.response);
-
-							pool.getConnection(function (err, connection) {
-								connection.query("UPDATE `" + dbname + "`.`portal_user` SET `reset_code`=?, `reset_tm`=NOW(), `reset_link`=? WHERE `email`=?;",
-									[code, resetLink, req.body.email],
-									function (err, result) {
-										connection.release();
-										if (!err) {
-											res.json({ status: true });
-										} else {
+							fs.readFile(__dirname + '/Email/reset_email_1.html', (err, data1) => {
+								if (err) throw err;
+								// console.log(data.toString());
+								fs.readFile(__dirname + '/Email/reset_email_2.html', (err, data2) => {
+									if (err) throw err;
+									var emailData = data1.toString() + reset_URL + data2.toString()
+									var s = new Readable
+									s.push(emailData)    // the string you want
+									s.push(null)
+									resetMailOptions.html = s;
+									transporter.sendMail(resetMailOptions, (error, info) => {
+										if (error) {
 											res.json({ status: false });
-											console.error(err);
-											//throw err;
+											return console.log(error);
 										}
+										console.log('Message %s sent: %s', info.messageId, info.response);
+
+										pool.getConnection(function (err, connection) {
+											connection.query("UPDATE `" + dbname + "`.`portal_user` SET `reset_code`=?, `reset_tm`=NOW(), `reset_link`=? WHERE `email`=?;",
+												[code, resetLink, req.body.email],
+												function (err, result) {
+													connection.release();
+													if (!err) {
+														res.json({ status: true });
+													} else {
+														res.json({ status: false });
+														console.error(err);
+														//throw err;
+													}
+												});
+										});
 									});
+								});
 							});
-							// });
+
 						}
 						else {
 							res.json({ status: false });
@@ -333,7 +371,7 @@ module.exports = function (app, auth, getRandom) {
 	});
 
 	// reset email link
-	
+
 	app.get('/auth/user/reset/:resetlink/password', function (req, res) {
 		// console.log(req.query.code, req.query.email);
 
