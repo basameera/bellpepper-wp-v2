@@ -6,7 +6,7 @@ var aes = require('aes-cross');
 var key = new Buffer(process.env.AES_KEY, 'binary');
 var fs = require('fs');
 var moment = require('moment');
-
+var randomstring = require("randomstring");
 /**
  * inject link to email
  * generate link parameter (code)
@@ -61,14 +61,17 @@ let resetMailOptions = {
 
 module.exports = function (app, auth, getRandom) {
 
+	//404 page
 	app.get('/invalid', function (req, res) {
 		res.sendFile(__dirname + '/public/404.html');
 	});
 
+	//send login page
 	app.get('/login', function (req, res) {
 		res.sendFile(__dirname + '/public/login.html');
 	});
 
+	//process login
 	app.post('/login', function (req, res) {
 		var form = new formidable.IncomingForm();
 		form.parse(req, function (err, fields, files) {
@@ -115,16 +118,18 @@ module.exports = function (app, auth, getRandom) {
 		});
 	});
 
+	// logout
 	app.get('/logout', function (req, res) {
 		req.session.destroy();
 		res.redirect('/');
 	});
 
 	// ---------- User management ----------
+	// 
 	app.get('/usermanage', auth, function (req, res) {
 		res.sendFile(__dirname + '/html/usermanage.html');
 	});
-
+	// query all users
 	app.get('/getusers', function (req, res) {
 		pool.getConnection(function (err, connection) {
 			connection.query("SELECT * FROM `" + dbname + "`.portal_user where status=0;",
@@ -136,7 +141,7 @@ module.exports = function (app, auth, getRandom) {
 						if (result.length > 0) {
 							for (var x = 0; x < result.length; x++) {
 								var con = 'btn btn-danger btn-simple btn-xs'
-								if(parseInt(result[x].email_confirm)==1)con = 'btn btn-success btn-simple btn-xs'
+								if (parseInt(result[x].email_confirm) == 1) con = 'btn btn-success btn-simple btn-xs'
 								var job = {
 									"NAME": result[x].db_username,
 									"ID": result[x].id,
@@ -160,22 +165,24 @@ module.exports = function (app, auth, getRandom) {
 
 	});
 
+	// register a new user - insert data to db & send the confirmation email
 	app.post('/registeruser', function (req, res) {
 		const code = getRandom().toString();
-		confirmMailOptions.text = 'Hi ' + req.body.us + '!,' + confirmMailOptions.text + '\nhttp://'+process.env.HOST_URL+'/auth/user/confirm/ler7wsd98fjv/email?code=' + code + '&email=' + req.body.email;
+		const confirmLink = randomstring.generate(10);
+		confirmMailOptions.text = 'Hi ' + req.body.us + '!,' + confirmMailOptions.text + '\nhttp://' + process.env.HOST_URL + '/auth/user/confirm/'+confirmLink+'/email?code=' + code + '&email=' + req.body.email;
 		confirmMailOptions.text += '\n\nEnjoy your browsing,\nBellpepper Team @ Ceymoss\n';
 		confirmMailOptions.to = req.body.email;
 		console.log(confirmMailOptions);
-		transporter.sendMail(confirmMailOptions, (error, info) => {
-			if (error) {
-				res.json({ status: false });
-				return console.log(error);
-			}
-			console.log('Message %s sent: %s', info.messageId, info.response);
+		// transporter.sendMail(confirmMailOptions, (error, info) => {
+		// 	if (error) {
+		// 		res.json({ status: false });
+		// 		return console.log(error);
+		// 	}
+		// 	console.log('Message %s sent: %s', info.messageId, info.response);
 			// res.json({ status: true });
 			pool.getConnection(function (err, connection) {
-				connection.query("INSERT INTO `" + dbname + "`.`portal_user` (`db_username`, `db_password`, `email`, `confirm_code`, `confirm_tm`) VALUES (?,?,?,?,NOW());",
-					[req.body.us, aes.encText(req.body.pw, key), req.body.email, code],
+				connection.query("INSERT INTO `" + dbname + "`.`portal_user` (`db_username`, `db_password`, `email`, `confirm_code`, `confirm_tm`, `confirm_link`) VALUES (?, ?, ?, ?, NOW(), ?);",
+					[req.body.us, aes.encText(req.body.pw, key), req.body.email, code, confirmLink],
 					function (err, result) {
 						connection.release();
 						if (!err) {
@@ -186,14 +193,15 @@ module.exports = function (app, auth, getRandom) {
 						}
 					});
 			});
-		});
+		// });
 
 	});
 
-	app.get('/auth/user/confirm/ler7wsd98fjv/email', function (req, res) {
+	// confirmation email link
+	app.get('/auth/user/confirm/:confirmlink/email', function (req, res) {
 		pool.getConnection(function (err, connection) {
-			connection.query("SELECT * FROM `" + dbname + "`.`portal_user` where email=? and confirm_code=?;",
-				[req.query.email, req.query.code],
+			connection.query("SELECT * FROM `" + dbname + "`.`portal_user` where email=? and confirm_code=? and confirm_link=?;",
+				[req.query.email, req.query.code, req.params.confirmlink],
 				function (err, result) {
 					connection.release();
 					if (!err) {
@@ -224,10 +232,12 @@ module.exports = function (app, auth, getRandom) {
 		});
 	});
 
+	// Email confirmation SUccess link
 	app.get('/emailconfirmed', function (req, res) {
 		res.sendFile(__dirname + '/public/confirm.html');
 	});
 
+	// delete users
 	app.delete('/deluser', function (req, res) {
 		console.log(req.body);
 
@@ -265,10 +275,12 @@ module.exports = function (app, auth, getRandom) {
 		});
 	});
 
+	//forgot password page
 	app.get('/forgotpassword', function (req, res) {
 		res.sendFile(__dirname + '/public/forgot.html');
 	});
 
+	// reset password - insert to DB & send reset email
 	app.post('/resetpassword', function (req, res) {
 		pool.getConnection(function (err, connection) {
 			connection.query("SELECT * FROM `" + dbname + "`.`portal_user` where email=?;",
@@ -278,33 +290,34 @@ module.exports = function (app, auth, getRandom) {
 					if (!err) {
 						if (result.length > 0) {
 							const code = getRandom().toString();
-							resetMailOptions.text = 'Hi ' + result[0].db_username + '!,' + resetMailOptions.text + '\n\nhttp://'+process.env.HOST_URL+'/auth/user/reset/ssl_zY2sdgspN/password?code=' + code + '&email=' + req.body.email;
+							const resetLink = randomstring.generate(10);
+							resetMailOptions.text = 'Hi ' + result[0].db_username + '!,' + resetMailOptions.text + '\n\nhttp://' + process.env.HOST_URL + '/auth/user/reset/'+resetLink+'/password?code=' + code + '&email=' + req.body.email;
 							resetMailOptions.text += '\nEnjoy your browsing,\nBellpepper Team @ Ceymoss\n';
 							resetMailOptions.to = req.body.email;
 							console.log(resetMailOptions);
 
-							transporter.sendMail(resetMailOptions, (error, info) => {
-								if (error) {
-									res.json({ status: false });
-									return console.log(error);
-								}
-								console.log('Message %s sent: %s', info.messageId, info.response);
+							// transporter.sendMail(resetMailOptions, (error, info) => {
+							// 	if (error) {
+							// 		res.json({ status: false });
+							// 		return console.log(error);
+							// 	}
+							// 	console.log('Message %s sent: %s', info.messageId, info.response);
 
-								pool.getConnection(function (err, connection) {
-									connection.query("UPDATE `" + dbname + "`.`portal_user` SET `reset_code`=?, `reset_tm`=NOW() WHERE `email`=?;",
-										[code, req.body.email],
-										function (err, result) {
-											connection.release();
-											if (!err) {
-												res.json({ status: true });
-											} else {
-												res.json({ status: false });
-												console.error(err);
-												//throw err;
-											}
-										});
-								});
+							pool.getConnection(function (err, connection) {
+								connection.query("UPDATE `" + dbname + "`.`portal_user` SET `reset_code`=?, `reset_tm`=NOW(), `reset_link`=? WHERE `email`=?;",
+									[code, resetLink, req.body.email],
+									function (err, result) {
+										connection.release();
+										if (!err) {
+											res.json({ status: true });
+										} else {
+											res.json({ status: false });
+											console.error(err);
+											//throw err;
+										}
+									});
 							});
+							// });
 						}
 						else {
 							res.json({ status: false });
@@ -319,13 +332,15 @@ module.exports = function (app, auth, getRandom) {
 		});
 	});
 
-	app.get('/auth/user/reset/ssl_zY2sdgspN/password', function (req, res) {
+	// reset email link
+	
+	app.get('/auth/user/reset/:resetlink/password', function (req, res) {
 		// console.log(req.query.code, req.query.email);
 
 		// bellp.portal_user 
 		pool.getConnection(function (err, connection) {
-			connection.query("SELECT * FROM `" + dbname + "`.`portal_user` where email=? and reset_code=?;",
-				[req.query.email, req.query.code],
+			connection.query("SELECT * FROM `" + dbname + "`.`portal_user` where email=? and reset_code=? and reset_link=?;",
+				[req.query.email, req.query.code, req.params.resetlink],
 				function (err, result) {
 					connection.release();
 					if (!err) {
@@ -362,6 +377,7 @@ module.exports = function (app, auth, getRandom) {
 		});
 	});
 
+	//new password page
 	app.get('/resetpasswordnow', function (req, res) {
 		if (req.session.user_id && req.session.resetReady) {
 			res.sendFile(__dirname + '/public/resetpassword.html');
@@ -370,6 +386,7 @@ module.exports = function (app, auth, getRandom) {
 		}
 	});
 
+	// insert the new password to the DB
 	app.post('/resetpasswordnew', function (req, res) {
 
 		var form = new formidable.IncomingForm();
@@ -405,5 +422,9 @@ module.exports = function (app, auth, getRandom) {
 			}
 		});
 	});
+
+	// app.get('/auth/user/reset/:resetcode/password', function (req, res) {
+	// 	res.send(req.params)
+	// });
 }
 
