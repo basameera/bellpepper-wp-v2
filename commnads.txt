@@ -23,15 +23,24 @@ git commit -m "Initing"
 
 # create heroku app
 heroku create
-git push https://git.heroku.com/<YOUR-APP-NAME>.git master
+git push https://git.heroku.com/<app name>.git master
 
 # rename heroku app
 heroku apps:rename <NEW NAME>
 
 # after pushing
 1. add ClearDb to the app
+	cleardb credencials = Heroku env var already has it OR heroku config --app <YOUR-APP-NAME>
 2. get ClearDb credencials (host, dbname, user, password)
 3. add all ENV variables
 4. check if app is working with login
 
-# add custom domain
+# Changes to do for production env
+1. Change 'config.js' file - MURL
+
+
+# heroku app restart
+heroku restart -a <APP-NAME>
+
+# check heorku log
+heroku logs --tail
